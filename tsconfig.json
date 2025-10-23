@@ -1,4 +1,4 @@
-
+// tsconfig.json (Đã thêm cấu hình baseUrl và paths)
 {
   "compilerOptions": {
     "lib": [
@@ -12,17 +12,18 @@
     "noEmit": true,
     "esModuleInterop": true,
     "module": "esnext",
-    "moduleResolution": "bundler", // <-- Thay "node" thành "bundler" (chuẩn mới hơn)
+    "moduleResolution": "bundler", 
     "resolveJsonModule": true,
     "isolatedModules": true,
     "jsx": "preserve",
-    "incremental": true
-    // "baseUrl": ".", // << XÓA DÒNG NÀY
-    // "paths": {      // << XÓA KHỐI NÀY
-    //   "@/*": ["./*"]
-    // }
-    ,
-    "target": "ES2017"
+    "incremental": true,
+    // --- PHẦN ĐƯỢC THÊM/SỬA ---
+    "baseUrl": ".", // Đặt thư mục gốc là thư mục hiện tại
+    "paths": {
+      "@/*": ["./*"] // Ánh xạ '@/' tới thư mục gốc './'
+    },
+    // --- KẾT THÚC PHẦN THÊM/SỬA ---
+    "target": "ES2017" 
   },
   "include": [
     "next-env.d.ts",
@@ -31,7 +32,7 @@
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts"
-  ], // Thêm ".next/types/**/*.ts"
+  ], 
   "exclude": [
     "node_modules"
   ]
