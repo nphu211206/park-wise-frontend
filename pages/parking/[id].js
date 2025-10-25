@@ -24,8 +24,8 @@ import withAuth from '@/hoc/withAuth';            // HOC bảo vệ route
 import ParkingLotVisualizer from '@/components/ParkingLotVisualizer'; // Sơ đồ ô đỗ
 import BookingForm from '@/components/BookingForm';             // Form đặt chỗ
 import ImageGallery from '@/components/ImageGallery';           // Carousel ảnh
-import LoadingSpinner from '@/components/utils/LoadingSpinner';   // Component loading
-import ErrorDisplay from '@/components/utils/ErrorDisplay';     // Component lỗi
+import LoadingSpinner from '@/utils/LoadingSpinner';   // Component loading
+import ErrorDisplay from '@/utils/ErrorDisplay';     // Component lỗi
 // (Bùng nổ) Import component Toast (cần cài đặt thư viện, vd: react-hot-toast)
 // import toast, { Toaster } from 'react-hot-toast';
 

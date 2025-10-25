@@ -2,11 +2,12 @@
 // Trang tìm kiếm, bản đồ, danh sách bãi xe và lịch sử đặt chỗ.
 
 // --- Import Core Libraries & Hooks ---
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useEffect, useState,useMemo } from 'react';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
 import Image from 'next/image';
+
 
 // --- Import UI & Animation Libraries ---
 import { motion, AnimatePresence } from 'framer-motion';
@@ -24,8 +25,8 @@ import {
 // --- Import Custom Components & Context ---
 import { useAuth } from '@/context/AuthContext';
 import withAuth from '@/hoc/withAuth'; // Bảo vệ trang này
-import LoadingSpinner from '@/components/utils/LoadingSpinner';
-import ErrorDisplay from '@/components/utils/ErrorDisplay';
+import LoadingSpinner from '@/utils/LoadingSpinner';
+import ErrorDisplay from '@/utils/ErrorDisplay';
 
 // --- (ĐẲNG CẤP) IMPORT HELPERS TỪ FILE UTILS ---
 import {
@@ -34,7 +35,7 @@ import {
     getStatusColor,
     getStatusText,
     getStatusIcon,
-    formatAmenityName,
+    formatAmenityName, 
     getAmenityIcon
 } from '@/utils/helpers'; // Import từ file utils (ĐẢM BẢO BẠN ĐÃ TẠO FILE NÀY)
 
@@ -352,22 +353,33 @@ const DashboardPage = () => {
 
     // --- Hàm Fetch Bookings ---
     const fetchBookings = useCallback(async () => {
-        if (!showHistory) return;
-        setIsLoadingBookings(true);
-        try {
-            const res = await fetch(`${API_URL}/bookings/mybookings`, { headers: { 'Authorization': `Bearer ${token}` } });
-            if (!res.ok) throw new Error('Không thể tải lịch sử đặt chỗ');
-            const data = await res.json();
-            setBookings(data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)));
-        } catch (err) {
-            console.error("Lỗi tải booking:", err);
-            setError(err.message);
-            setBookings([]);
-        } finally {
-            setIsLoadingBookings(false);
+    if (!showHistory) return;
+    setIsLoadingBookings(true);
+    setError(null); // Clear previous errors specifically for bookings
+    console.log("Token used for fetching bookings:", token); // << THÊM DÒNG NÀY ĐỂ KIỂM TRA TOKEN
+    try {
+        const res = await fetch(`${API_URL}/bookings/mybookings`, {
+            headers: { // << KIỂM TRA KỸ PHẦN NÀY
+                'Authorization': `Bearer ${token}` // Đảm bảo token có giá trị và đúng định dạng
+            }
+        });
+        if (!res.ok) {
+             // Ghi log chi tiết hơn về lỗi
+             console.error(`Fetch bookings failed with status: ${res.status}`);
+             const errorBody = await res.text(); // Đọc nội dung lỗi nếu có
+             console.error("Error body:", errorBody);
+            throw new Error('Không thể tải lịch sử đặt chỗ'); // Thông báo lỗi cũ giữ nguyên
         }
-    }, [showHistory, token, API_URL]);
-
+        const data = await res.json();
+        setBookings(data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)));
+    } catch (err) {
+        console.error("Lỗi tải booking:", err);
+        setError(err.message); // Hiển thị lỗi ra UI
+        setBookings([]);
+    } finally {
+        setIsLoadingBookings(false);
+    }
+}, [showHistory, token, API_URL]); // Đảm bảo token có trong dependencies
     // --- useEffect: Fetch Bãi xe lần đầu ---
     useEffect(() => {
         fetchParkingLots();

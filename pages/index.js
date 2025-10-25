@@ -3,7 +3,7 @@
 import { useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { useAuth } from '../context/AuthContext';
-import LoadingSpinner from '../components/utils/LoadingSpinner'; // Import component loading
+import LoadingSpinner from '../utils/LoadingSpinner'; // Import component loading
 
 const HomePage = () => {
     const { isAuthenticated, user, isLoading } = useAuth();
